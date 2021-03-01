@@ -90,3 +90,7 @@ void goRight() {
     }
   }
 }
+
+void rotate() {
+
+}

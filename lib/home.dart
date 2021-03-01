@@ -15,8 +15,6 @@ class _HomeState extends State<Home> {
 
   Widget grid;
   bool isButtonDisable = false;
-  bool isGoLeft = false;
-  bool isGoRight = false;
 
   @override
   void initState() {
@@ -30,14 +28,6 @@ class _HomeState extends State<Home> {
       setState(() {
         dropping();
         grid = getGrid();
-        if(isGoLeft) {
-          goLeft();
-        }
-        if(isGoRight) {
-          goRight();
-        }
-        isGoLeft = false;
-        isGoRight = false;
       });
     });
   }
@@ -91,7 +81,7 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {isGoLeft = true;},
+                          onPressed: () {goLeft();},
                           child: Center(child: Icon(Icons.chevron_left, color: Colors.white, size: 30,))),
                     ),
                   ),
@@ -103,7 +93,7 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {isGoRight = true;},
+                          onPressed: () {goRight();},
                           child: Center(child: Icon(Icons.chevron_right, color: Colors.white, size: 30,))),
                     ),
                   ),
