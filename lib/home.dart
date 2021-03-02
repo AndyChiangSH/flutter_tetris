@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   void timer() {
     Timer.periodic(Duration(milliseconds: 500), (timer){
       setState(() {
+
         dropping();
         grid = getGrid();
       });
@@ -105,7 +106,7 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {print("rotate");},
+                          onPressed: () {rotate();},
                           child: Center(child: Icon(Icons.rotate_right_outlined, color: Colors.white, size: 30,))),
                     ),
                   ),

@@ -6,10 +6,12 @@ import 'dart:math';
 var gridList = new List<int>(150);
 List<int> newBlock = [];
 int shape=0;
+int dir;
+int basicPoint;
 List newBlocks = [
   [4,14,24,34],
   [4,5,14,24],
-  [4,5,15,25],
+  [3,4,14,24],
   [4,5,14,15],
   [4,14,15,25],
   [4,14,15,24],
@@ -30,14 +32,16 @@ void startGame() {
 
 void createBlock() {
   shape = Random().nextInt(6);
+  shape = 4;  // test
   droppingBlock = newBlocks[shape];
+  dir = 1;
+  basicPoint=14;
   for(int i=0; i<droppingBlock.length; i++) {
     gridList[droppingBlock[i]] = shape;
   }
 }
 
 void dropping() {
-  int droppingShape = gridList[droppingBlock[0]];
   for(int i=0; i<droppingBlock.length; i++) {
     gridList[droppingBlock[i]] = -1;
   }
@@ -45,8 +49,9 @@ void dropping() {
     droppingBlock[i] += 10;
   }
   for(int i=0; i<droppingBlock.length; i++) {
-    gridList[droppingBlock[i]] = droppingShape;
+    gridList[droppingBlock[i]] = shape;
   }
+  basicPoint += 10;
 }
 
 void goLeft() {
@@ -57,7 +62,6 @@ void goLeft() {
     }
   }
   if(isLeftOK) {
-    int droppingShape = gridList[droppingBlock[0]];
     for(int i=0; i<droppingBlock.length; i++) {
       gridList[droppingBlock[i]] = -1;
     }
@@ -65,8 +69,9 @@ void goLeft() {
       droppingBlock[i] -= 1;
     }
     for(int i=0; i<droppingBlock.length; i++) {
-      gridList[droppingBlock[i]] = droppingShape;
+      gridList[droppingBlock[i]] = shape;
     }
+    basicPoint -= 1;
   }
 }
 
@@ -78,7 +83,6 @@ void goRight() {
     }
   }
   if(isRightOK) {
-    int droppingShape = gridList[droppingBlock[0]];
     for(int i=0; i<droppingBlock.length; i++) {
       gridList[droppingBlock[i]] = -1;
     }
@@ -86,11 +90,207 @@ void goRight() {
       droppingBlock[i] += 1;
     }
     for(int i=0; i<droppingBlock.length; i++) {
-      gridList[droppingBlock[i]] = droppingShape;
+      gridList[droppingBlock[i]] = shape;
     }
+    basicPoint += 1;
   }
 }
 
 void rotate() {
 
+  var rotatedBlock = new List<int>(4);
+
+  // I
+  if(shape==0) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+10;
+      rotatedBlock[3] = basicPoint+20;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint-1;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+2;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-9;
+      rotatedBlock[1] = basicPoint+1;
+      rotatedBlock[2] = basicPoint+11;
+      rotatedBlock[3] = basicPoint+21;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint+9;
+      rotatedBlock[1] = basicPoint+10;
+      rotatedBlock[2] = basicPoint+11;
+      rotatedBlock[3] = basicPoint+12;
+    }
+  }
+  // J
+  if(shape==1) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint-9;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint-1;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+11;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+9;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint-11;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+1;
+    }
+  }
+  // L
+  if(shape==2) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-11;
+      rotatedBlock[1] = basicPoint-10;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint-9;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+1;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+10;
+      rotatedBlock[3] = basicPoint+11;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint-1;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+9;
+    }
+  }
+  // O : nothing
+  // S
+  if(shape==4) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+11;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint;
+      rotatedBlock[1] = basicPoint+1;
+      rotatedBlock[2] = basicPoint+9;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-11;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint-9;
+      rotatedBlock[2] = basicPoint-1;
+      rotatedBlock[3] = basicPoint;
+    }
+  }
+  // T
+  if(shape==5) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint-1;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+1;
+    }
+  }
+  // Z
+  if(shape==6) {
+    if(dir==0) {
+      rotatedBlock[0] = basicPoint-9;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+1;
+      rotatedBlock[3] = basicPoint+10;
+    }
+    else if(dir==1) {
+      rotatedBlock[0] = basicPoint-1;
+      rotatedBlock[1] = basicPoint;
+      rotatedBlock[2] = basicPoint+10;
+      rotatedBlock[3] = basicPoint+11;
+    }
+    else if(dir==2) {
+      rotatedBlock[0] = basicPoint-10;
+      rotatedBlock[1] = basicPoint-1;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+9;
+    }
+    else if(dir==3) {
+      rotatedBlock[0] = basicPoint-11;
+      rotatedBlock[1] = basicPoint-10;
+      rotatedBlock[2] = basicPoint;
+      rotatedBlock[3] = basicPoint+1;
+    }
+  }
+
+  // I的特殊情況
+  if(shape == 0) {
+    if(basicPoint%10 != 0 && basicPoint%10 != 8 && basicPoint%10 != 9) {
+      for(int i=0; i<droppingBlock.length; i++) {
+        gridList[droppingBlock[i]] = -1;
+      }
+
+      droppingBlock = rotatedBlock;
+
+      for(int i=0; i<droppingBlock.length; i++) {
+        gridList[droppingBlock[i]] = shape;
+      }
+      dir = (dir+1)%4;
+    }
+  }
+  else {
+    if(basicPoint%10 != 0 && basicPoint%10 != 9) {
+      for(int i=0; i<droppingBlock.length; i++) {
+        gridList[droppingBlock[i]] = -1;
+      }
+
+      droppingBlock = rotatedBlock;
+
+      for(int i=0; i<droppingBlock.length; i++) {
+        gridList[droppingBlock[i]] = shape;
+      }
+      dir = (dir+1)%4;
+    }
+  }
 }
