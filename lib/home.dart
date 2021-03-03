@@ -27,7 +27,14 @@ class _HomeState extends State<Home> {
     Timer.periodic(Duration(milliseconds: 500), (timer){
       setState(() {
 
-        dropping();
+        if(landed()) {
+          print("createBlock");
+          createBlock();
+          print(droppingBlock);
+        }
+        else {
+          dropping();
+        }
         grid = getGrid();
       });
     });
