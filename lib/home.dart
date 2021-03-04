@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'game.dart';
 import 'grid.dart';
+import 'package:vibration/vibration.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -24,13 +25,19 @@ class _HomeState extends State<Home> {
   }
 
   void timer() {
-    Timer.periodic(Duration(milliseconds: 500), (timer){
+    Timer.periodic(Duration(milliseconds: 500), (timer) {
       setState(() {
-
         if(landed()) {
-          print("createBlock");
-          createBlock();
-          print(droppingBlock);
+          crashLine();
+          if(endGame()) {
+            print("game over!");
+            dir = 0;
+            timer.cancel();
+            showEndDialog();
+          }
+          else {
+            createBlock();
+          }
         }
         else {
           dropping();
@@ -48,10 +55,10 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             // 分數區
-            // Expanded(
-            //     flex: 1,
-            //     child: Center(child: Text("score", style: TextStyle(color: Colors.white, fontSize: 20),))
-            // ),
+            Expanded(
+                flex: 1,
+                child: Center(child: Text("score : $score", style: TextStyle(color: Colors.white, fontSize: 20),))
+            ),
             // 方塊區，寬10格，高20格
             Expanded(
                 flex: 15,
@@ -89,7 +96,12 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {goLeft();},
+                          onPressed: () async {
+                            goLeft();
+                            if (await Vibration.hasCustomVibrationsSupport()) {
+                              Vibration.vibrate(duration: 10);
+                            }
+                          },
                           child: Center(child: Icon(Icons.chevron_left, color: Colors.white, size: 30,))),
                     ),
                   ),
@@ -101,7 +113,12 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {goRight();},
+                          onPressed: () async {
+                            goRight();
+                            if (await Vibration.hasCustomVibrationsSupport()) {
+                              Vibration.vibrate(duration: 10);
+                            }
+                          },
                           child: Center(child: Icon(Icons.chevron_right, color: Colors.white, size: 30,))),
                     ),
                   ),
@@ -113,7 +130,12 @@ class _HomeState extends State<Home> {
                       width: 80,
                       color: Colors.black,
                       child: FlatButton(
-                          onPressed: () {rotate();},
+                          onPressed: () async {
+                            rotate();
+                            if (await Vibration.hasCustomVibrationsSupport()) {
+                              Vibration.vibrate(duration: 20);
+                            }
+                          },
                           child: Center(child: Icon(Icons.rotate_right_outlined, color: Colors.white, size: 30,))),
                     ),
                   ),
@@ -123,6 +145,31 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+
+  void showEndDialog() async {
+    if (await Vibration.hasCustomVibrationsSupport()) {
+      Vibration.vibrate(duration: 200);
+    }
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext) {
+        return AlertDialog(
+          title: Text("score : $score"),
+          actions: [
+            FlatButton(
+                onPressed: () {
+                  startGame();
+                  timer();
+                  Navigator.of(context).pop();
+                },
+                child: Text("Play again"),
+            ),
+          ],
+        );
+      }
     );
   }
 }
