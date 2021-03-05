@@ -34,7 +34,7 @@ Widget getGrid() {
             borderRadius: BorderRadius.circular(10),
             color: singleGridColor,
           ),
-          child: Text(index.toString(), style: TextStyle(color: Colors.white),),
+          // child: Text(index.toString(), style: TextStyle(color: Colors.white),),
         );
       },
     ),

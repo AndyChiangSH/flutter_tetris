@@ -1,7 +1,6 @@
 // playground
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'game.dart';
 import 'grid.dart';
@@ -29,14 +28,11 @@ class _HomeState extends State<Home> {
       setState(() {
         if(landed()) {
           crashLine();
-          if(endGame()) {
+          if(createBlock()) {
             print("game over!");
             dir = 0;
             timer.cancel();
             showEndDialog();
-          }
-          else {
-            createBlock();
           }
         }
         else {

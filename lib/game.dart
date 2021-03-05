@@ -20,27 +20,52 @@ List newBlocks = [
   [4,14,15,24],
   [5,14,15,24],
 ];
+List selectList = [];
 
 void init() {
+  selectList = [];
+  rotatedBlock = [0, 0, 0, 0];
+  score = 0;
   for(int i = 0; i<150; i++) {
     gridList[i] = -1;
   }
 }
 
 void startGame() {
-  score = 0;
   init();
   createBlock();
 }
 
-void createBlock() {
-  shape = Random().nextInt(6);
+bool createBlock() {
+
+  bool endGame = false;
+
+  shape = selectShape();
   for(int i=0; i<droppingBlock.length; i++) {
     droppingBlock[i] = newBlocks[shape][i];
+    if(gridList[droppingBlock[i]] != -1) {
+      endGame = true;  // false 則結束遊戲
+    }
   }
-  dir = 1;
-  basicPoint=14;
+
   setBlock();
+  if(endGame) {
+    return true;
+  }
+  else {
+    dir = 1;
+    basicPoint=14;
+    return false;
+  }
+}
+
+int selectShape() {
+  if(selectList.length==0){
+    selectList = [0, 1, 2, 3, 4, 5, 6];
+  }
+  // print(selectList.removeAt(Random().nextInt(selectList.length)));
+  // print(num);
+  return selectList.removeAt(Random().nextInt(selectList.length));
 }
 
 void dropping() {
@@ -93,6 +118,7 @@ void goRight() {
 }
 
 void rotate() {
+  cleanBlock();
   // I
   if(shape==0) {
     if(dir==0) {
@@ -175,9 +201,6 @@ void rotate() {
     }
   }
   // O : nothing
-  if(shape==3) {
-    rotatedBlock = droppingBlock;
-  }
   // S
   if(shape==4) {
     if(dir==0) {
@@ -261,23 +284,28 @@ void rotate() {
   }
 
   // I的特殊情況
-  cleanBlock();
-  if(shape == 0) {
-    if(basicPoint%10 != 0 && basicPoint%10 != 8 && basicPoint%10 != 9 && !hitted()) {
-      for(int i=0; i<droppingBlock.length; i++) {
-        droppingBlock[i] = rotatedBlock[i];
+  print("dir: $dir");
+  print("dropping: $droppingBlock");
+  print("rotated: $rotatedBlock");
+  if(shape != 3) {
+    if(shape == 0) {
+      if(basicPoint%10 != 0 && basicPoint%10 != 8 && basicPoint%10 != 9 && !hitted()) {
+        for(int i=0; i<droppingBlock.length; i++) {
+          droppingBlock[i] = rotatedBlock[i];
+        }
+        dir = (dir+1)%4;
       }
-      dir = (dir+1)%4;
+    }
+    else {
+      if(basicPoint%10 != 0 && basicPoint%10 != 9 && !hitted()) {
+        for(int i=0; i<droppingBlock.length; i++) {
+          droppingBlock[i] = rotatedBlock[i];
+        }
+        dir = (dir+1)%4;
+      }
     }
   }
-  else {
-    if(basicPoint%10 != 0 && basicPoint%10 != 9 && !hitted()) {
-      for(int i=0; i<droppingBlock.length; i++) {
-        droppingBlock[i] = rotatedBlock[i];
-      }
-      dir = (dir+1)%4;
-    }
-  }
+
   setBlock();
 }
 
@@ -366,9 +394,9 @@ void crashLine() async {
     }
   }
 
-  countScore(lineNumber);
-  if(await Vibration.hasCustomVibrationsSupport()) {
-    for(int i=0; i<lineNumber; i++) {
+  if(lineNumber>0) {
+    countScore(lineNumber);
+    if(await Vibration.hasCustomVibrationsSupport()) {
       Vibration.vibrate(duration: 50);
     }
   }
@@ -386,14 +414,5 @@ void countScore(int line) {
   }
   else if(line==4) {
     score += 800;
-  }
-}
-
-bool endGame() {
-  if(gridList[4] != -1 || gridList[5] != -1) {
-    return true;
-  }
-  else {
-    return false;
   }
 }
