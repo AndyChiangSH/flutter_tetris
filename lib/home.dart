@@ -14,7 +14,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   Widget grid;
-  bool isButtonDisable = false;
+  bool isPlayButton = true;
+  Widget buttonElement = Text("PLAY", style: TextStyle(color: Colors.white, fontSize: 20));
+  int fps = 800;
 
   @override
   void initState() {
@@ -24,21 +26,27 @@ class _HomeState extends State<Home> {
   }
 
   void timer() {
-    Timer.periodic(Duration(milliseconds: 500), (timer) {
+    Timer(Duration(milliseconds: fps), () {
       setState(() {
+
+        // DEBUG
+        print("fps: $fps");
+
         if(landed()) {
+          fps = 800;
           crashLine();
           if(createBlock()) {
             print("game over!");
             dir = 0;
-            timer.cancel();
             showEndDialog();
+            return;
           }
         }
         else {
           dropping();
         }
         grid = getGrid();
+        timer();
       });
     });
   }
@@ -73,15 +81,34 @@ class _HomeState extends State<Home> {
                       height: 80,
                       width: 80,
                       color: Colors.black,
-                      child: FlatButton(
-                          onPressed: () {
-                            if (!isButtonDisable) {
-                              isButtonDisable = true;
-                              startGame();
-                              timer();
-                            }
-                          },
-                          child: Center(child: Text("PLAY", style: TextStyle(color: Colors.white, fontSize: 20)))),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (isPlayButton) {
+                            isPlayButton = false;
+                            buttonElement = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 30,);
+                            startGame();
+                            timer();
+                            print("be taped");
+                          }
+                        },
+                        onLongPressStart: (details) {
+                          if(!isPlayButton) {
+                            setState(() {
+                              fps = 200;
+                              print("press start");
+                            });
+                          }
+                        },
+                        onLongPressEnd: (details) {
+                          if(!isPlayButton) {
+                            setState(() {
+                              fps = 800;
+                              print("press end");
+                            });
+                          }
+                        },
+                        child: Center(child: buttonElement),
+                      ),
                     ),
                   ),
                   // 左移
